@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { Section } from '../Section/Section';
+import { FeedbackOptions } from '../FeedbackOptions/FeedbackOptions';
+import { Statistics } from '../Statistics/Statistics';
 
 export default class App extends Component {
   state = {
@@ -7,16 +10,9 @@ export default class App extends Component {
     bad: 0,
   };
 
-  handleIncrementGood = evt => {
-    this.setState({ good: this.state.good + 1 });
-  };
-
-  handleIncrementNeutral = evt => {
-    this.setState({ neutral: this.state.neutral + 1 });
-  };
-
-  handleIncrementBad = evt => {
-    this.setState({ bad: this.state.bad + 1 });
+  handleFeedback = evt => {
+    const score = evt.target.name;
+    this.setState(state => ({ [score]: state[score] + 1 }));
   };
 
   countTotalFeedback() {
@@ -31,25 +27,22 @@ export default class App extends Component {
 
   render() {
     const { good, neutral, bad } = this.state;
+    const options = ['good', 'neutral', 'bad'];
 
     return (
       <div>
-        <h1>Please leave feedback</h1>
-        <button type="button" onClick={this.handleIncrementGood}>
-          Good
-        </button>
-        <button type="button" onClick={this.handleIncrementNeutral}>
-          Neutral
-        </button>
-        <button type="button" onClick={this.handleIncrementBad}>
-          Bad
-        </button>
-        <h2>Statistics </h2>
-        <p>Good state: {good} </p>
-        <p>Neutral state: {neutral}</p>
-        <p>Bad state: {bad}</p>
-        <p>Total: {this.countTotalFeedback()}</p>
-        <p>Total: {this.countPositiveFeedbackPercentage()}%</p>
+        <Section title="Please leave feedback">
+          <FeedbackOptions handle={this.handleFeedback} options={options} />
+        </Section>
+        <Section title="Statistics">
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            totalFeedback={this.countTotalFeedback()}
+            positiveFeedback={this.countPositiveFeedbackPercentage()}
+          ></Statistics>
+        </Section>
       </div>
     );
   }
